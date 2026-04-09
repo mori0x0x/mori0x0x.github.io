@@ -1,0 +1,51 @@
+---
+layout: default
+title: The Journey
+permalink: /journey/
+---
+
+<main class="page">
+
+  <p class="eyebrow">// the journey</p>
+  <h1 class="headline">$0 to<br>Wherever This Goes</h1>
+  <p class="headline-sub">
+    Honest dispatches from day zero. Not a tutorial — a log.
+    The wins, the dead ends, the slow hours. Updated as things happen.
+  </p>
+
+  <div class="rule"></div>
+
+  {% assign journey_posts = site.posts | where: "visibility", "public" | sort: "date" | reverse %}
+  {% assign journey_filtered = "" | split: "" %}
+  {% for post in journey_posts %}
+    {% if post.topics contains 'journey' %}
+      {% assign journey_filtered = journey_filtered | push: post %}
+    {% endif %}
+  {% endfor %}
+
+  {% if journey_filtered.size == 0 %}
+    <p class="empty">no entries yet — the journey just started.</p>
+  {% else %}
+    <div class="post-list">
+      {% assign total = journey_filtered | size %}
+      {% for post in journey_filtered %}
+        <a href="{{ post.url | relative_url }}" class="post-item journey-item">
+          <span class="journey-num">#{{ total | minus: forloop.index0 | prepend: "00" | slice: -2, 2 }}</span>
+          <span class="post-tag">{{ post.tag | default: 'notes' }}</span>
+          <div class="post-meta-row">
+            <span class="post-title">{{ post.title }}</span>
+            {% if post.description %}
+              <span class="post-desc">{{ post.description }}</span>
+            {% endif %}
+            <span style="font-family:var(--mono);font-size:10px;color:var(--text4);margin-top:3px;">
+              {{ post.date | date: '%b %Y' }}
+            </span>
+          </div>
+        </a>
+      {% endfor %}
+    </div>
+  {% endif %}
+
+</main>
+
+<script src="{{ '/assets/js/mori.js' | relative_url }}"></script>

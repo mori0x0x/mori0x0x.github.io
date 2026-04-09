@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>{% if page.title %}{{ page.title }} — mori{% else %}mori{% endif %}</title>
+  <link rel="stylesheet" href="{{ '/assets/css/style.css' | relative_url }}" />
+  <script>
+    /* Apply saved theme before paint to avoid flash */
+    (function(){
+      var t = localStorage.getItem('mori-theme') || 'dark';
+      document.documentElement.setAttribute('data-theme', t);
+    })();
+  </script>
+</head>
+<body>
+
+<nav>
+  <a href="{{ '/' | relative_url }}" class="nav-logo">mori<span>.sh</span></a>
+
+  <div class="nav-links">
+    <a href="{{ '/' | relative_url }}"         {% if page.url == '/'            %}class="active"{% endif %}>posts</a>
+    <a href="{{ '/topics/' | relative_url }}"  {% if page.url contains 'topics' %}class="active"{% endif %}>topics</a>
+    <a href="{{ '/journey/' | relative_url }}" {% if page.url contains 'journey' %}class="active"{% endif %}>journey</a>
+    <a href="{{ '/about/' | relative_url }}"   {% if page.url contains 'about'   %}class="active"{% endif %}>about</a>
+    <a href="{{ '/contact/' | relative_url }}" {% if page.url contains 'contact' %}class="active"{% endif %}>contact</a>
+  </div>
+
+  <div class="nav-controls">
+    <button class="theme-toggle" onclick="toggleTheme()" title="Toggle dark mode" aria-label="Toggle dark mode">
+      <span class="icon-moon">☽</span>
+      <span class="icon-sun">☀</span>
+    </button>
+    <button class="nav-hamburger" id="hamburger" onclick="toggleMenu()" aria-label="Toggle menu">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+</nav>
+
+<div class="nav-mobile-menu" id="mobile-menu">
+  <a href="{{ '/' | relative_url }}"         {% if page.url == '/'            %}class="active"{% endif %} onclick="closeMenu()">posts</a>
+  <a href="{{ '/topics/' | relative_url }}"  {% if page.url contains 'topics' %}class="active"{% endif %} onclick="closeMenu()">topics</a>
+    <a href="{{ '/journey/' | relative_url }}" {% if page.url contains 'journey' %}class="active"{% endif %}>journey</a>
+    <a href="{{ '/about/' | relative_url }}"   {% if page.url contains 'about'   %}class="active"{% endif %}>about</a>
+    <a href="{{ '/contact/' | relative_url }}" {% if page.url contains 'contact' %}class="active"{% endif %}>contact</a>
+</div>
+
+{{ content }}
+
+<footer>
+  <span class="footer-name">mori</span>
+  <span class="footer-note">Built By <a href="https://github.com/saeeedhany" style="text-decoration: underline; font-weight: bold;">Saeed</a></span>
+</footer>
+
+<div class="toast" id="toast"></div>
+<script src="{{ '/assets/js/mori.js' | relative_url }}"></script>
+</body>
+</html>

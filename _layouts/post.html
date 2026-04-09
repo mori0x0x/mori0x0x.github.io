@@ -1,0 +1,68 @@
+---
+layout: default
+---
+
+<main class="page">
+
+  {% assign vis = page.visibility | default: 'private' %}
+
+  <p class="eyebrow">// {{ page.tag | default: 'post' }}</p>
+
+  <div style="display:flex;align-items:center;gap:12px;margin-bottom:8px;flex-wrap:wrap;">
+    <h1 class="headline" style="margin-bottom:0;">{{ page.title }}</h1>
+    <span class="visibility-badge vis-{{ vis }}">{{ vis }}</span>
+  </div>
+
+  <div style="display:flex;align-items:center;gap:12px;margin-bottom:40px;flex-wrap:wrap;">
+    <span style="font-family:var(--mono);font-size:11px;color:var(--text3);">{{ page.date | date: "%b %Y" }}</span>
+    {% if page.topics %}
+      {% for t in page.topics %}
+        <span class="post-tag">{{ t }}</span>
+      {% endfor %}
+    {% endif %}
+    {% if page.pinned %}<span class="pin-badge">pinned</span>{% endif %}
+    {% if page.hot    %}<span class="hot-badge">hot</span>{% endif %}
+    {% if page.bounty_ref %}
+      <a href="{{ '/about/' | relative_url }}#bounty-{{ page.bounty_ref }}" class="bounty-mention">
+        ⬡ bounty #{{ page.bounty_ref }}
+      </a>
+    {% endif %}
+  </div>
+
+  {% if page.description %}
+    <p style="font-size:15px;color:var(--text2);line-height:1.7;margin-bottom:32px;max-width:580px;padding:16px 20px;background:var(--bg2);border:0.5px solid var(--border);border-radius:8px;">
+      {{ page.description }}
+    </p>
+  {% endif %}
+
+  <div class="post-body">
+    {{ content }}
+  </div>
+
+  <!-- LIKES -->
+  <div style="margin-top:48px;display:flex;align-items:center;gap:12px;">
+    <button class="like-btn" id="like-btn" onclick="toggleLike()">
+      <span class="like-heart">♡</span>
+      <span id="like-count">{{ page.likes | default: 0 }}</span>
+    </button>
+    <span style="font-family:var(--mono);font-size:10px;color:var(--text4);">// like this post</span>
+  </div>
+
+  <!-- COMMENTS -->
+  <div class="comments-section">
+    <div class="sec-title">// comments</div>
+    <div id="comments-list"></div>
+    <div class="comment-form">
+      <input  type="text" class="comment-input"    id="comment-name" placeholder="your name (optional)" />
+      <textarea           class="comment-textarea" id="comment-text" placeholder="add a comment..."></textarea>
+      <button class="btn-submit" onclick="submitComment()">submit comment</button>
+    </div>
+  </div>
+
+</main>
+
+<script>
+  var POST_KEY = 'post_{{ page.slug | default: page.title | slugify }}';
+  var STATIC_COMMENT_COUNT = {{ page.comments.size | default: 0 }};
+</script>
+<script src="{{ '/assets/js/post.js' | relative_url }}"></script>

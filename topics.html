@@ -1,191 +1,124 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>mori — Topics</title>
-  <link rel="stylesheet" href="css/style.css" />
-</head>
-<body>
-
-<nav>
-  <a href="index.html" class="nav-logo">mori<span>.sh</span></a>
-  <div class="nav-links">
-    <a href="index.html">posts</a>
-    <a href="topics.html" class="active">topics</a>
-    <a href="about.html">about</a>
-    <a href="contact.html">contact</a>
-  </div>
-</nav>
+---
+layout: default
+title: Topics
+permalink: /topics/
+---
 
 <main class="page">
 
   <p class="eyebrow">// topics</p>
   <h1 class="headline">Browse by<br>Category</h1>
   <p class="headline-sub">
-    Click a topic to filter posts and videos. Counts update as I publish.
+    Every public post — writeups, videos, notes — sorted by topic.
+    Click a card to filter, or search below.
   </p>
 
-  <div class="topic-grid">
-    <div class="topic-card" onclick="filterTopic('idor')">
+  <div class="topic-grid" id="topic-grid">
+
+    <!-- VULNERABILITY TYPES -->
+    <div class="topic-card" data-topic="idor">
       <div class="topic-tag">// vuln</div>
       <div class="topic-name">IDOR</div>
       <div class="topic-count" id="count-idor">0 posts</div>
     </div>
-    <div class="topic-card" onclick="filterTopic('ssrf')">
+    <div class="topic-card" data-topic="ssrf">
       <div class="topic-tag">// vuln</div>
       <div class="topic-name">SSRF</div>
       <div class="topic-count" id="count-ssrf">0 posts</div>
     </div>
-    <div class="topic-card" onclick="filterTopic('xss')">
+    <div class="topic-card" data-topic="xss">
       <div class="topic-tag">// vuln</div>
       <div class="topic-name">XSS</div>
       <div class="topic-count" id="count-xss">0 posts</div>
     </div>
-    <div class="topic-card" onclick="filterTopic('logic')">
+    <div class="topic-card" data-topic="logic">
       <div class="topic-tag">// vuln</div>
       <div class="topic-name">Logic Bugs</div>
       <div class="topic-count" id="count-logic">0 posts</div>
     </div>
-    <div class="topic-card" onclick="filterTopic('auth')">
+    <div class="topic-card" data-topic="auth">
       <div class="topic-tag">// vuln</div>
       <div class="topic-name">Auth Bypass</div>
       <div class="topic-count" id="count-auth">0 posts</div>
     </div>
-    <div class="topic-card" onclick="filterTopic('graphql')">
+    <div class="topic-card" data-topic="graphql">
       <div class="topic-tag">// tech</div>
       <div class="topic-name">GraphQL</div>
       <div class="topic-count" id="count-graphql">0 posts</div>
     </div>
-    <div class="topic-card" onclick="filterTopic('recon')">
+    <div class="topic-card" data-topic="recon">
       <div class="topic-tag">// method</div>
       <div class="topic-name">Recon</div>
       <div class="topic-count" id="count-recon">0 posts</div>
     </div>
-    <div class="topic-card" onclick="filterTopic('ai')">
+    <div class="topic-card" data-topic="ai">
       <div class="topic-tag">// emerging</div>
       <div class="topic-name">AI Security</div>
       <div class="topic-count" id="count-ai">0 posts</div>
     </div>
-    <div class="topic-card" onclick="filterTopic('video')">
+
+    <!-- FORMAT -->
+    <div class="topic-card" data-topic="video">
       <div class="topic-tag">// format</div>
       <div class="topic-name">Hacking Videos</div>
       <div class="topic-count" id="count-video">0 videos</div>
     </div>
-    <div class="topic-card" onclick="filterTopic('writeup')">
+    <div class="topic-card" data-topic="writeup">
       <div class="topic-tag">// format</div>
       <div class="topic-name">Writeups</div>
       <div class="topic-count" id="count-writeup">0 writeups</div>
     </div>
+    <div class="topic-card" data-topic="notes">
+      <div class="topic-tag">// format</div>
+      <div class="topic-name">Notes</div>
+      <div class="topic-count" id="count-notes">0 notes</div>
+    </div>
+
+    <!-- JOURNEY — special card -->
+    <div class="topic-card journey-card" data-topic="journey">
+      <div class="topic-tag">// story</div>
+      <div class="topic-name">The Journey</div>
+      <div class="topic-count" id="count-journey">0 entries</div>
+    </div>
+
   </div>
 
   <div class="rule"></div>
 
-  <div id="filter-label" style="font-family:var(--mono);font-size:10px;color:var(--text4);letter-spacing:.1em;margin-bottom:20px;display:none;">
+  <!-- SEARCH -->
+  <div class="search-wrap" style="margin-bottom:20px;">
+    <input type="text" class="search-input" id="search-input"
+           placeholder="search all posts..." autocomplete="off" />
+    <span class="search-icon" id="search-icon">⌕</span>
+    <button class="search-clear" id="search-clear" onclick="clearSearch()">✕</button>
+  </div>
+
+  <div id="filter-label" style="font-family:var(--mono);font-size:10px;color:var(--text4);
+       letter-spacing:.1em;margin-bottom:20px;display:none;">
     // showing: <span id="active-topic"></span>
-    <button onclick="clearFilter()" style="background:none;border:none;font-family:var(--mono);font-size:10px;color:var(--text3);cursor:pointer;margin-left:12px;text-decoration:underline;">clear</button>
+    <button onclick="clearFilter()" style="background:none;border:none;font-family:var(--mono);
+            font-size:10px;color:var(--text3);cursor:pointer;margin-left:12px;
+            text-decoration:underline;">clear</button>
   </div>
 
   <div class="post-list" id="post-list"></div>
-  <div class="empty" id="empty-state">no posts yet — working on it.</div>
+  <div class="empty"     id="empty-state">no posts yet — working on it.</div>
 
 </main>
 
-<footer>
-  <span class="footer-name">mori</span>
-  <span class="footer-note">updated as things happen</span>
-</footer>
-
-<style>
-  .topic-card.active-card { border-color: var(--border2); background: var(--bg2); }
-</style>
-
 <script>
-  /*
-  ═══════════════════════════════
-    ADD POSTS HERE
-    topics: array of strings matching topic-card keys
-  ═══════════════════════════════
-  */
-  const POSTS = [
-    /*
+  window.POSTS = [
+    {% assign all_public = site.posts | where: "visibility", "public" %}
+    {% for post in all_public %}
     {
-      date: 'Apr 2026',
-      tag: 'writeup',
-      title: 'Your Post Title Here',
-      url: '#',
-      topics: ['idor', 'writeup']
-    },
-    */
+      date:   "{{ post.date | date: '%b %Y' }}",
+      tag:    "{{ post.tag | default: 'note' }}",
+      title:  {{ post.title | jsonify }},
+      desc:   {{ post.description | default: '' | jsonify }},
+      url:    "{{ post.url | relative_url }}",
+      topics: {{ post.topics | default: empty_array | jsonify }}
+    }{% unless forloop.last %},{% endunless %}
+    {% endfor %}
   ];
-
-  let activeFilter = null;
-
-  function countFor(topic) {
-    return POSTS.filter(p => p.topics && p.topics.includes(topic)).length;
-  }
-
-  function updateCounts() {
-    ['idor','ssrf','xss','logic','auth','graphql','recon','ai','video','writeup'].forEach(t => {
-      const el = document.getElementById('count-' + t);
-      if (el) {
-        const n = countFor(t);
-        const unit = t === 'video' ? 'video' : t === 'writeup' ? 'writeup' : 'post';
-        el.textContent = n + ' ' + unit + (n !== 1 ? 's' : '');
-      }
-    });
-  }
-
-  function render(filter) {
-    const list = document.getElementById('post-list');
-    const empty = document.getElementById('empty-state');
-    const label = document.getElementById('filter-label');
-    const filtered = filter ? POSTS.filter(p => p.topics && p.topics.includes(filter)) : POSTS;
-
-    list.innerHTML = '';
-
-    if (filtered.length === 0) {
-      empty.style.display = 'block';
-    } else {
-      empty.style.display = 'none';
-      filtered.forEach(p => {
-        list.innerHTML += `
-          <a href="${p.url}" class="post-item">
-            <span class="post-date">${p.date}</span>
-            <span class="post-tag">${p.tag}</span>
-            <span class="post-title">${p.title}</span>
-          </a>`;
-      });
-    }
-
-    if (filter) {
-      label.style.display = 'block';
-      document.getElementById('active-topic').textContent = filter;
-    } else {
-      label.style.display = 'none';
-    }
-  }
-
-  function filterTopic(topic) {
-    document.querySelectorAll('.topic-card').forEach(c => c.classList.remove('active-card'));
-    if (activeFilter === topic) {
-      activeFilter = null;
-    } else {
-      activeFilter = topic;
-      event.currentTarget.classList.add('active-card');
-    }
-    render(activeFilter);
-  }
-
-  function clearFilter() {
-    activeFilter = null;
-    document.querySelectorAll('.topic-card').forEach(c => c.classList.remove('active-card'));
-    render(null);
-  }
-
-  updateCounts();
-  render(null);
 </script>
-
-</body>
-</html>
+<script src="{{ '/assets/js/topics.js' | relative_url }}"></script>

@@ -1,0 +1,37 @@
+# ═══════════════════════════════════════════════════════
+# Bounty Log — add a new block under "entries:" for each bounty
+# The about page totals and progress bar update automatically.
+#
+# Fields:
+#   id:        unique ID — use "001", "002", "003", etc.
+#   date:      "Mon YYYY"  e.g. "Apr 2026"
+#   title:     short description of the bug
+#   amount:    dollar amount as a number (no $ sign)
+#   severity:  critical | high | medium | low | info
+#   platform:  hackerone | bugcrowd | intigriti | private
+#   program:   program name (optional)
+#   notes:     one-line note (optional)
+#   writeup:   path to your writeup post (optional) e.g. /posts/idor-user-profile/
+# ═══════════════════════════════════════════════════════
+
+entries:
+  - id: "001"
+    date: "Apr 2026"
+    title: "IDOR on user profile endpoint"
+    amount: 500
+    severity: medium
+    platform: hackerone
+    program: "Private Program"
+    notes: "Unauthenticated access to private user data via predictable integer IDs"
+    writeup: "/posts/idor-user-profile/"
+
+# ── To add a new bounty, copy the block below and fill it in ──
+#  - id: "002"
+#    date: "Apr 2026"
+#    title: "Your bug title here"
+#    amount: 0
+#    severity: medium
+#    platform: hackerone
+#    program: "Program Name"
+#    notes: "Short note"
+#    writeup: ""

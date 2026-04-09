@@ -1,123 +1,125 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>mori — Posts</title>
-  <link rel="stylesheet" href="css/style.css" />
-</head>
-<body>
-
-<nav>
-  <a href="index.html" class="nav-logo">mori<span>.sh</span></a>
-  <div class="nav-links">
-    <a href="index.html" class="active">posts</a>
-    <a href="topics.html">topics</a>
-    <a href="about.html">about</a>
-    <a href="contact.html">contact</a>
-  </div>
-</nav>
+---
+layout: default
+title: Posts
+---
 
 <main class="page">
 
   <p class="eyebrow">// posts</p>
   <h1 class="headline">Writing &<br>Hacking Videos</h1>
   <p class="headline-sub">
-    Writeups, walkthroughs, and notes from the field. Everything here is honest —
-    published when I actually have something worth sharing.
+    Writeups, walkthroughs, and notes from the field. Published when I have something
+    worth saying — not before.
   </p>
 
-  <!-- POST FILTERS -->
-  <div style="display:flex;gap:8px;margin-bottom:32px;flex-wrap:wrap;">
-    <button class="filter-btn active" data-filter="all">All</button>
-    <button class="filter-btn" data-filter="writeup">Writeups</button>
-    <button class="filter-btn" data-filter="video">Videos</button>
-    <button class="filter-btn" data-filter="notes">Notes</button>
+  <!-- TAG FILTERS -->
+  <div style="display:flex;gap:8px;margin:32px 0 40px;flex-wrap:wrap;">
+    <a href="{{ '/' | relative_url }}"                       class="filter-btn {% unless page.tag_filter %}active{% endunless %}">All</a>
+    <a href="{{ '/?filter=writeup' | relative_url }}"        class="filter-btn {% if page.tag_filter == 'writeup' %}active{% endif %}">Writeups</a>
+    <a href="{{ '/?filter=video' | relative_url }}"          class="filter-btn {% if page.tag_filter == 'video' %}active{% endif %}">Videos</a>
+    <a href="{{ '/?filter=notes' | relative_url }}"          class="filter-btn {% if page.tag_filter == 'notes' %}active{% endif %}">Notes</a>
+    <a href="{{ '/?filter=journey' | relative_url }}"        class="filter-btn {% if page.tag_filter == 'journey' %}active{% endif %}">Journey</a>
   </div>
 
+  {% assign pub = site.posts | where: "visibility", "public" | sort: "date" | reverse %}
+
+  <!-- PINNED BOUNTY — most recent bounty with a writeup link -->
+  {% assign pinned_post = "" %}
+  {% for post in pub %}
+    {% if post.pinned == true and pinned_post == "" %}
+      {% assign pinned_post = post %}
+    {% endif %}
+  {% endfor %}
+
+  {% if pinned_post != "" %}
+  <div style="margin-bottom: 12px;">
+    <div class="sec-title">// pinned</div>
+    <a href="{{ pinned_post.url | relative_url }}" class="post-item" style="border:1px solid var(--border);border-radius:4px;padding:16px;">
+      <span class="post-date">{{ pinned_post.date | date: '%b %Y' }}</span>
+      <span class="post-tag">{{ pinned_post.tag | default: 'note' }}</span>
+      <div class="post-meta-row">
+        <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;">
+          <span class="post-title">{{ pinned_post.title }}</span>
+          <span class="pin-badge">pinned</span>
+        </div>
+        {% if pinned_post.description %}
+          <span class="post-desc">{{ pinned_post.description }}</span>
+        {% endif %}
+        {% if pinned_post.topics %}
+        <div style="display:flex;gap:6px;margin-top:5px;flex-wrap:wrap;">
+          {% for topic in pinned_post.topics %}
+            <span class="post-tag" style="font-size:8px;">{{ topic }}</span>
+          {% endfor %}
+        </div>
+        {% endif %}
+      </div>
+    </a>
+  </div>
+  <div class="rule"></div>
+  {% endif %}
+
+  <!-- RECENT POSTS (up to 10, skip pinned) -->
   <div class="post-list" id="post-list">
-    <!-- Posts rendered by JS -->
+    {% assign count = 0 %}
+    {% for post in pub %}
+      {% if post.pinned == true %}{% continue %}{% endif %}
+      {% if count >= 10 %}{% break %}{% endif %}
+      {% assign count = count | plus: 1 %}
+      <a href="{{ post.url | relative_url }}" class="post-item" data-tag="{{ post.tag }}">
+        <span class="post-date">{{ post.date | date: '%b %Y' }}</span>
+        <span class="post-tag">{{ post.tag | default: 'note' }}</span>
+        <div class="post-meta-row">
+          <span class="post-title">{{ post.title }}</span>
+          {% if post.description %}
+            <span class="post-desc">{{ post.description }}</span>
+          {% endif %}
+          {% if post.topics %}
+          <div style="display:flex;gap:6px;margin-top:5px;flex-wrap:wrap;">
+            {% for topic in post.topics %}
+              <span class="post-tag" style="font-size:8px;">{{ topic }}</span>
+            {% endfor %}
+          </div>
+          {% endif %}
+        </div>
+      </a>
+    {% endfor %}
   </div>
 
-  <div class="empty" id="empty-state" style="display:none;">
-    no posts yet — working on it.
+  <!-- CTA -->
+  <div class="cta-block" style="margin-top:48px;">
+    <div class="cta-block-text">
+      <strong>Browse the full archive</strong>
+      Filter by vulnerability type, format, or topic — all posts sorted and searchable.
+    </div>
+    <a href="{{ '/topics/' | relative_url }}" class="cta-btn">view all posts →</a>
   </div>
 
 </main>
 
-<footer>
-  <span class="footer-name">mori</span>
-  <span class="footer-note">updated as things happen</span>
-</footer>
-
-<style>
-  .filter-btn {
-    font-family: var(--mono);
-    font-size: 10px;
-    letter-spacing: 0.08em;
-    color: var(--text3);
-    background: none;
-    border: 0.5px solid var(--border);
-    border-radius: 5px;
-    padding: 6px 14px;
-    cursor: pointer;
-    transition: all 0.15s;
-  }
-  .filter-btn:hover { border-color: var(--border2); color: var(--text2); }
-  .filter-btn.active { color: var(--text); border-color: var(--border2); background: var(--bg2); }
-</style>
-
 <script>
-  /* ── Add your posts here ── */
-  const POSTS = [
-    /*
-    {
-      date: 'Apr 2026',
-      tag: 'writeup',
-      title: 'Your First Writeup Title Here',
-      url: '#'
-    },
-    {
-      date: 'Apr 2026',
-      tag: 'video',
-      title: 'Your First Video Title Here',
-      url: '#'
-    },
-    */
-  ];
+/* Simple client-side tag filter for the buttons */
+(function () {
+  var params  = new URLSearchParams(window.location.search);
+  var filter  = params.get('filter') || 'all';
+  var items   = document.querySelectorAll('#post-list .post-item');
+  var btns    = document.querySelectorAll('.filter-btn');
 
-  const list = document.getElementById('post-list');
-  const empty = document.getElementById('empty-state');
-  const btns = document.querySelectorAll('.filter-btn');
-
-  function render(filter) {
-    const filtered = filter === 'all' ? POSTS : POSTS.filter(p => p.tag === filter);
-    list.innerHTML = '';
-    if (filtered.length === 0) {
-      empty.style.display = 'block';
-      return;
-    }
-    empty.style.display = 'none';
-    filtered.forEach(p => {
-      list.innerHTML += `
-        <a href="${p.url}" class="post-item">
-          <span class="post-date">${p.date}</span>
-          <span class="post-tag">${p.tag}</span>
-          <span class="post-title">${p.title}</span>
-        </a>`;
-    });
-  }
-
-  btns.forEach(btn => {
-    btn.addEventListener('click', () => {
-      btns.forEach(b => b.classList.remove('active'));
-      btn.classList.add('active');
-      render(btn.dataset.filter);
-    });
+  /* Mark correct button active */
+  btns.forEach(function (btn) {
+    var href   = btn.getAttribute('href') || '';
+    var bParam = new URLSearchParams(href.split('?')[1] || '').get('filter') || 'all';
+    btn.classList.toggle('active', bParam === filter);
   });
 
-  render('all');
+  /* Show/hide posts */
+  if (filter !== 'all') {
+    items.forEach(function (item) {
+      var tag     = item.dataset.tag || '';
+      /* Also check topics text inside the item */
+      var topics  = Array.from(item.querySelectorAll('.post-tag')).map(function(el){ return el.textContent.trim(); });
+      var match   = tag === filter || topics.indexOf(filter) !== -1;
+      item.style.display = match ? '' : 'none';
+    });
+  }
+})();
 </script>
-
-</body>
-</html>
